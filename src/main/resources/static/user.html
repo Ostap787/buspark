@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        .list-section {
+            margin-bottom: 20px;
+        }
+        .list-section h2 {
+            margin-top: 0;
+            padding-top: 10px;
+            border-top: 1px solid #ddd;
+        }
+        .list-section ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .list-section li {
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Current Routes</h1>
+
+        <div class="list-section">
+            <h2>Buses in Park</h2>
+            <ul id="busesInParkList"></ul>
+        </div>
+
+        <div class="list-section">
+            <h2>Buses on Route</h2>
+            <ul id="busesOnRouteList"></ul>
+        </div>
+    </div>
+
+    <script>
+        function fetchBuses() {
+            fetch('/api/buses/inPark')
+                .then(response => response.json())
+                .then(data => renderBusesInPark(data));
+
+            fetch('/api/buses/onRoute')
+                .then(response => response.json())
+                .then(data => renderBusesOnRoute(data));
+        }
+
+        function renderBusesInPark(buses) {
+            const busesInParkList = document.getElementById('busesInParkList');
+            busesInParkList.innerHTML = '';
+            buses.forEach(bus => {
+                const li = document.createElement('li');
+                li.textContent = `Bus Number: ${bus.busNumber} (Route: ${bus.routeNumber})`;
+                busesInParkList.appendChild(li);
+            });
+        }
+
+        function renderBusesOnRoute(buses) {
+            const busesOnRouteList = document.getElementById('busesOnRouteList');
+            busesOnRouteList.innerHTML = '';
+            buses.forEach(bus => {
+                const li = document.createElement('li');
+                li.textContent = `Bus Number: ${bus.busNumber} (Route: ${bus.routeNumber})`;
+                busesOnRouteList.appendChild(li);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', fetchBuses);
+    </script>
+</body>
+</html>
