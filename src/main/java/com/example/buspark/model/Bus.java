@@ -22,8 +22,9 @@ public class Bus {
     private boolean inPark;
 
     // Constructors
-    public Bus(String busNumber) {
+    public Bus(String busNumber, String driverName) {
         this.busNumber = busNumber;
+        this.driverName = driverName;
     }
 
     public Bus(String busNumber, String routeNumber, String driverName, boolean inPark) {

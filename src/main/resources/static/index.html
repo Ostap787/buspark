@@ -115,14 +115,14 @@
 
     <script>
         function fetchBuses() {
-            fetch('https://bus--park.azurewebsites.net/api/buses/inPark')
+            fetch('http://localhost:8080/api/buses/inPark')
                 .then(response => response.json())
                 .then(data => {
                     renderBusesInPark(data, 'busesInParkList');
                     renderNewBuses(data, 'newBusesInParkList'); // For new section
                 });
 
-            fetch('https://bus--park.azurewebsites.net/api/buses/onRoute')
+            fetch('http://localhost:8080/api/buses/onRoute')
                 .then(response => response.json())
                 .then(data => {
                     renderBusesOnRoute(data, 'busesOnRouteList');
@@ -130,55 +130,57 @@
                 });
         }
 
-        function renderBusesInPark(buses, elementId) {
-            const list = document.getElementById(elementId);
-            list.innerHTML = '';
-            buses.forEach(bus => {
-                const li = document.createElement('li');
-                li.innerHTML = `
-                    <div class="bus-info">
-                        <strong>Bus Number:</strong> ${bus.busNumber}<br>
-                        <strong>Route:</strong> ${bus.routeNumber}<br>
-                        <strong>Driver:</strong> ${bus.driverName}
-                    </div>
-                    <button class="start-route" onclick="toggleRoute(${bus.id}, true)">Start Route</button>
-                `;
-                list.appendChild(li);
-            });
-        }
+       function renderBusesInPark(buses, elementId) {
+    const list = document.getElementById(elementId);
+    list.innerHTML = '';
+    buses.forEach(bus => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+            <div class="bus-info">
+                <strong>Bus Number:</strong> ${bus.busNumber}<br>
+                <strong>Route:</strong> ${bus.routeNumber}<br>
+                <strong>Driver:</strong> ${bus.driverName}
+            </div>
+            <button class="start-route" onclick="toggleRoute(${bus.id}, true)">Start Route</button>
+        `;
+        list.appendChild(li);
+    });
+}
 
-        function renderBusesOnRoute(buses, elementId) {
-            const list = document.getElementById(elementId);
-            list.innerHTML = '';
-            buses.forEach(bus => {
-                const li = document.createElement('li');
-                li.innerHTML = `
-                    <div class="bus-info">
-                        <strong>Bus Number:</strong> ${bus.busNumber}<br>
-                        <strong>Route:</strong> ${bus.routeNumber}<br>
-                        <strong>Driver:</strong> ${bus.driverName}
-                    </div>
-                    <button class="end-route" onclick="toggleRoute(${bus.id}, false)">End Route</button>
-                `;
-                list.appendChild(li);
-            });
-        }
+function renderBusesOnRoute(buses, elementId) {
+    const list = document.getElementById(elementId);
+    list.innerHTML = '';
+    buses.forEach(bus => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+            <div class="bus-info">
+                <strong>Bus Number:</strong> ${bus.busNumber}<br>
+                <strong>Route:</strong> ${bus.routeNumber}<br>
+                <strong>Driver:</strong> ${bus.driverName}
+            </div>
+            <button class="end-route" onclick="toggleRoute(${bus.id}, false)">End Route</button>
+        `;
+        list.appendChild(li);
+    });
+}
 
-        function renderNewBuses(buses, elementId) {
-            const list = document.getElementById(elementId);
-            list.innerHTML = '';
-            buses.forEach(bus => {
-                const li = document.createElement('li');
-                li.innerHTML = `
-                    <div class="bus-info">
-                        <strong>Bus Number:</strong> ${bus.busNumber}<br>
-                        <strong>Route:</strong> ${bus.routeNumber}<br>
-                        <strong>Driver:</strong> ${bus.driverName}
-                    </div>
-                `;
-                list.appendChild(li);
-            });
-        }
+function renderNewBuses(buses, elementId) {
+    const list = document.getElementById(elementId);
+    list.innerHTML = '';
+    buses.forEach(bus => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+            <div class="bus-info">
+                <strong>Bus Number:</strong> ${bus.busNumber}<br>
+                <strong>Route:</strong> ${bus.routeNumber}<br>
+                <strong>Driver:</strong> ${bus.driverName}
+            </div>
+        `;
+        list.appendChild(li);
+    });
+}
+
+
 
         function validateAndAddBus() {
             const busNumber = document.getElementById('busNumber').value.trim();
@@ -214,7 +216,7 @@
         inPark: true // за замовчуванням встановлюємо true
     };
 
-    fetch('https://bus--park.azurewebsites.net/api/buses', {
+    fetch('http://localhost:8080/api/buses', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -237,7 +239,7 @@
 
 
         function toggleRoute(id, inPark) {
-            fetch(`https://bus--park.azurewebsites.net/api/buses/${inPark ? 'moveToRoute' : 'moveToPark'}/${id}`, { method: 'POST' })
+            fetch(`http://localhost:8080/api/buses/${inPark ? 'moveToRoute' : 'moveToPark'}/${id}`, { method: 'POST' })
                 .then(() => fetchBuses());
         }
 
