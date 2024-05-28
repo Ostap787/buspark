@@ -15,16 +15,26 @@ public class Bus {
     @Column(name = "route_number", nullable = false)
     private String routeNumber;
 
+    @Column(name = "driver_name", nullable = false)
+    private String driverName;
+
     @Column(name = "in_park", nullable = false)
     private boolean inPark;
 
     // Constructors
-    public Bus() {}
+    public Bus(String busNumber) {
+        this.busNumber = busNumber;
+    }
 
-    public Bus(String busNumber, String routeNumber, boolean inPark) {
+    public Bus(String busNumber, String routeNumber, String driverName, boolean inPark) {
         this.busNumber = busNumber;
         this.routeNumber = routeNumber;
+        this.driverName = driverName;
         this.inPark = inPark;
+    }
+
+    public Bus() {
+
     }
 
     // Getters and setters
@@ -50,6 +60,14 @@ public class Bus {
 
     public void setRouteNumber(String routeNumber) {
         this.routeNumber = routeNumber;
+    }
+
+    public String getDriverName() {
+        return driverName;
+    }
+
+    public void setDriverName(String driverName) {
+        this.driverName = driverName;
     }
 
     public boolean isInPark() {

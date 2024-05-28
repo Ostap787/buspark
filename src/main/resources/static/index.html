@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bus Park Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2 {
+            text-align: center;
+            color: #333;
+        }
+        .list-section {
+            margin-bottom: 20px;
+        }
+        .list-section ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        .list-section li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            margin-bottom: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .list-section button {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .start-route {
+            background-color: #28a745;
+            color: #fff;
+        }
+        .end-route {
+            background-color: #dc3545;
+            color: #fff;
+        }
+        .bus-info {
+            line-height: 1.5;
+        }
+        .form-section {
+            margin-bottom: 20px;
+        }
+        .form-section input {
+            padding: 10px;
+            margin: 5px 0;
+            width: calc(100% - 22px);
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        .form-section button {
+            padding: 10px;
+            width: 100%;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #8000ff;
+            color: #fff;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Bus Park Management</h1>
+
+        <div class="form-section">
+            <h2>Add New Bus</h2>
+            <input type="text" id="busNumber" placeholder="Bus Number">
+            <input type="text" id="routeNumber" placeholder="Route Number">
+            <input type="text" id="driverName" placeholder="Driver Name">
+            <button onclick="validateAndAddBus()">Add Bus</button>
+        </div>
+
+        <div class="list-section">
+            <h2>Buses in Park</h2>
+            <ul id="busesInParkList"></ul>
+        </div>
+
+        <div class="list-section">
+            <h2>Buses on Route</h2>
+            <ul id="busesOnRouteList"></ul>
+        </div>
+
+        <div class="list-section">
+            <h2>Review Buses in Park</h2>
+            <ul id="newBusesInParkList"></ul>
+        </div>
+
+        <div class="list-section">
+            <h2>Review Buses on Route</h2>
+            <ul id="newBusesOnRouteList"></ul>
+        </div>
+    </div>
+
+    <script>
+        function fetchBuses() {
+            fetch('https://bus--park.azurewebsites.net/api/buses/inPark')
+                .then(response => response.json())
+                .then(data => {
+                    renderBusesInPark(data, 'busesInParkList');
+                    renderNewBuses(data, 'newBusesInParkList'); // For new section
+                });
+
+            fetch('https://bus--park.azurewebsites.net/api/buses/onRoute')
+                .then(response => response.json())
+                .then(data => {
+                    renderBusesOnRoute(data, 'busesOnRouteList');
+                    renderNewBuses(data, 'newBusesOnRouteList'); // For new section
+                });
+        }
+
+        function renderBusesInPark(buses, elementId) {
+            const list = document.getElementById(elementId);
+            list.innerHTML = '';
+            buses.forEach(bus => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <div class="bus-info">
+                        <strong>Bus Number:</strong> ${bus.busNumber}<br>
+                        <strong>Route:</strong> ${bus.routeNumber}<br>
+                        <strong>Driver:</strong> ${bus.driverName}
+                    </div>
+                    <button class="start-route" onclick="toggleRoute(${bus.id}, true)">Start Route</button>
+                `;
+                list.appendChild(li);
+            });
+        }
+
+        function renderBusesOnRoute(buses, elementId) {
+            const list = document.getElementById(elementId);
+            list.innerHTML = '';
+            buses.forEach(bus => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <div class="bus-info">
+                        <strong>Bus Number:</strong> ${bus.busNumber}<br>
+                        <strong>Route:</strong> ${bus.routeNumber}<br>
+                        <strong>Driver:</strong> ${bus.driverName}
+                    </div>
+                    <button class="end-route" onclick="toggleRoute(${bus.id}, false)">End Route</button>
+                `;
+                list.appendChild(li);
+            });
+        }
+
+        function renderNewBuses(buses, elementId) {
+            const list = document.getElementById(elementId);
+            list.innerHTML = '';
+            buses.forEach(bus => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <div class="bus-info">
+                        <strong>Bus Number:</strong> ${bus.busNumber}<br>
+                        <strong>Route:</strong> ${bus.routeNumber}<br>
+                        <strong>Driver:</strong> ${bus.driverName}
+                    </div>
+                `;
+                list.appendChild(li);
+            });
+        }
+
+        function validateAndAddBus() {
+            const busNumber = document.getElementById('busNumber').value.trim();
+            const routeNumber = document.getElementById('routeNumber').value.trim();
+            const driverName = document.getElementById('driverName').value.trim();
+
+            const busNumberPattern = /^[a-zA-Z]{2}\d{4}[a-zA-Z]{2}$/;
+            if (!busNumberPattern.test(busNumber)) {
+                alert('Please enter a valid bus number in the format AA0000AA.');
+                return;
+            }
+
+            const routeNumberPattern = /^[a-zA-Z]\d{2}$/;
+            if (!routeNumberPattern.test(routeNumber)) {
+                alert('Please enter a valid route number in the format A00.');
+                return;
+            }
+
+            const driverNamePattern = /^[a-zA-Zа-яА-Я]+\s[A-ZА-Я]\.[A-ZА-Я]\.$/;
+            if (!driverNamePattern.test(driverName)) {
+                alert('Please enter a valid driver name in the format "Surname I.I."');
+                return;
+            }
+
+            addBus(busNumber, routeNumber, driverName);
+        }
+
+        function addBus(busNumber, routeNumber, driverName) {
+            const newBus = {
+                busNumber,
+                routeNumber,
+                driverName,
+                inPark: true
+            };
+
+            fetch('https://bus--park.azurewebsites.net/api/buses', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(newBus)
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Bus successfully added!');
+                    fetchBuses(); // Оновіть список автобусів після успішного додавання
+                } else {
+                    alert('Failed to add bus. Please try again.');
+                }
+            })
+            .catch(error => {
+                console.error('Error adding bus:', error);
+                alert('An error occurred while adding the bus. Please try again later.');
+            });
+        }
+
+        function toggleRoute(id, inPark) {
+            fetch(`https://bus--park.azurewebsites.net/api/buses/${inPark ? 'moveToRoute' : 'moveToPark'}/${id}`, { method: 'POST' })
+                .then(() => fetchBuses());
+        }
+
+        document.addEventListener('DOMContentLoaded', fetchBuses);
+    </script>
+</body>
+</html>
