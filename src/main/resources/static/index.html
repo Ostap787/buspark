@@ -206,34 +206,35 @@
             addBus(busNumber, routeNumber, driverName);
         }
 
-        function addBus(busNumber, routeNumber, driverName) {
-            const newBus = {
-                busNumber,
-                routeNumber,
-                driverName,
-                inPark: true
-            };
+       function addBus(busNumber, routeNumber, driverName) {
+    const newBus = {
+        busNumber: busNumber,
+        routeNumber: routeNumber,
+        driverName: driverName,
+        inPark: true // за замовчуванням встановлюємо true
+    };
 
-            fetch('https://bus--park.azurewebsites.net/api/buses', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(newBus)
-            })
-            .then(response => {
-                if (response.ok) {
-                    alert('Bus successfully added!');
-                    fetchBuses(); // Оновіть список автобусів після успішного додавання
-                } else {
-                    alert('Failed to add bus. Please try again.');
-                }
-            })
-            .catch(error => {
-                console.error('Error adding bus:', error);
-                alert('An error occurred while adding the bus. Please try again later.');
-            });
+    fetch('https://bus--park.azurewebsites.net/api/buses', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(newBus)
+    })
+    .then(response => {
+        if (response.ok) {
+            alert('Bus successfully added!');
+            fetchBuses(); // Оновити список автобусів після успішного додавання
+        } else {
+            alert('Failed to add bus. Please try again.');
         }
+    })
+    .catch(error => {
+        console.error('Error adding bus:', error);
+        alert('An error occurred while adding the bus. Please try again later.');
+    });
+}
+
 
         function toggleRoute(id, inPark) {
             fetch(`https://bus--park.azurewebsites.net/api/buses/${inPark ? 'moveToRoute' : 'moveToPark'}/${id}`, { method: 'POST' })
